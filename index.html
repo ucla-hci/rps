@@ -2,15 +2,13 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Rock, Paper, Scissors</title>
+    <title>Rock-Paper-Scissors</title>
     <link rel=" stylesheet" href="./styles.css">
     <link rel=" stylesheet" href="libs/jquery-ui.min.css">
 
 </head>
 
 <body>
-    <!-- <header>Play rock, paper, scissors with the computer.</header> -->
-
     <table id="tbLayout" width="250px" border=0>
         <tbody>
             <!-- computer view -->
@@ -22,14 +20,15 @@
                     </div>
                 </td>
             </tr>
-            <!-- status -->
             <tr>
                 <td></td>
             </tr>
+
+            <!-- status & controls -->
             <tr>
                 <td>
                     <span id="spanStatus" class="ui-widget">
-                        Train a model first
+                        Rock-paper-scissors!
                     </span>
                     &nbsp;&nbsp;&nbsp;
                     <span id="btnTrain">
@@ -48,14 +47,15 @@
             <tr>
                 <td></td>
             </tr>
+
             <!-- player view (webcam) -->
             <tr>
                 <td>
                     <video autoplay playsinline muted id="webcam" width="224" height="224"></video>
                 </td>
             </tr>
-            <!-- control buttons -->
 
+            <!-- individual trained labels' buttons -->
             <tr>
                 <td>
                     <table width="100%">

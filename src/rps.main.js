@@ -1,15 +1,27 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//
+//  rock-paper-scissors with the computer
+//
+//  main functions with tensorflow components
+//  ref: https://js.tensorflow.org/tutorials/webcam-transfer-learning.html
+//
+//  xac@ucla.edu, 09/2018
+//
+//////////////////////////////////////////////////////////////////////////////////////////
+
 var rps = rps || {};
 
 const webcam = new Webcam(document.getElementById("webcam"));
-
 const NUM_CLASSES = 4;
-
 const controllerDataset = new ControllerDataset(NUM_CLASSES);
 
 let mobilenet;
 let model;
 let isPredicting = false;
 
+//
+//  load mobilenet -- a pre-trained model
+//
 async function loadMobilenet() {
   const mobilenet = await tf.loadModel(
     "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json"
@@ -30,8 +42,12 @@ ui.setExampleHandler(label => {
   });
 });
 
+//
+//  train collected example using tensorflow
+//
 rps.train = async () => {
   if (controllerDataset.xs == null) {
+    ui.updateStatus("Add examples first!");
     throw new Error("Add some examples before training!");
   }
 
@@ -56,12 +72,12 @@ rps.train = async () => {
     ]
   });
 
+  // learning rate: 0.0001
   const optimizer = tf.train.adam(0.0001);
-  // const optimizer = tf.train.adam(ui.getLearningRate());
   model.compile({ optimizer: optimizer, loss: "categoricalCrossentropy" });
 
   const batchSize = Math.floor(
-    // controllerDataset.xs.shape[0] * ui.getBatchSizeFraction()
+    // batch size fraction: 0.4
     controllerDataset.xs.shape[0] * 0.4
   );
   if (!(batchSize > 0)) {
@@ -73,7 +89,7 @@ rps.train = async () => {
   // Train the model! Model.fit() will shuffle xs & ys so we don't have to.
   model.fit(controllerDataset.xs, controllerDataset.ys, {
     batchSize,
-    epochs: 20, //ui.getEpochs(),
+    epochs: 20, //epochs: 20
     callbacks: {
       onBatchEnd: async (batch, logs) => {
         console.info("Loss: " + logs.loss.toFixed(5));
@@ -82,7 +98,25 @@ rps.train = async () => {
   });
 };
 
+//
+//  continuously predicting labels based on camera feed
+//
 rps.predict = async () => {
+  // if mobilenet is not loaded
+  if (mobilenet == undefined) {
+    ui.isPaused = true;
+    ui.updateStatus("Mobilenet not loaded!");
+    return;
+  }
+
+  // if the model has not been trained
+  if (model == undefined) {
+    ui.isPaused = true;
+    ui.updateStatus("Train a model first!");
+    return;
+  }
+
+  // keep predicting until rock, paper or scissors occurs
   while (!ui.isPaused) {
     const predictedClass = tf.tidy(() => {
       const img = webcam.capture();
@@ -94,6 +128,7 @@ rps.predict = async () => {
     const classId = (await predictedClass.data())[0];
     predictedClass.dispose();
 
+    // some play happens
     if (classId < 3) {
       ui.isPaused = true;
       ui.judgePlay(classId);
@@ -101,18 +136,26 @@ rps.predict = async () => {
   }
 };
 
+//
+//  initialize the system
+//
 async function init() {
   ui.init();
 
+  ui.updateStatus("Setting up webcam ...");
   try {
     await webcam.setup();
   } catch (e) {
     console.error("webcam setup error!");
   }
+
+  ui.updateStatus("Loading Mobilenet ...");
   mobilenet = await loadMobilenet();
 
+  ui.updateStatus("Getting ready ...");
   tf.tidy(() => mobilenet.predict(webcam.capture()));
+
+  ui.updateStatus("Ready now.");
 }
 
-// Initialize the application.
 init();

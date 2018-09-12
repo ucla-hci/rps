@@ -1,4 +1,16 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//
+//  rock-paper-scissors with the computer
+//
+//  main functions with tensorflow components
+//  ref: https://js.tensorflow.org/tutorials/webcam-transfer-learning.html
+//
+//  xac@ucla.edu, 09/2018
+//
+//////////////////////////////////////////////////////////////////////////////////////////
+
 var rps = rps || {};
+
 let ui = {};
 
 const RPS = ["rock", "paper", "scissors", "none"];
@@ -6,12 +18,15 @@ const RPS = ["rock", "paper", "scissors", "none"];
 rps.totals = [0, 0, 0, 0];
 rps.thumbDisplayed = {};
 
+//
+//  initialize ui
+//
 ui.init = function() {
   ui.isPaused = true;
   ui.idxPlay = ((Math.random() * 97) | 0) % 3;
   $("#imgPlay").attr("src", "./assets/" + RPS[ui.idxPlay] + ".png");
 
-  // video
+  // video to show camera images
   let posInfo = $("video")
     .parent()[0]
     .getBoundingClientRect();
@@ -26,20 +41,21 @@ ui.init = function() {
   $("#btnPlay").button();
   $("#btnPlay").click(ui.onPlay);
 
+  // buttons for each trained label
   $("#btnRock").button();
-  $("#btnRock").on("mousedown", () => ui.handler(0));
+  $("#btnRock").on("mousedown", () => ui.collectExamples(0));
   $("#btnRock").on("mouseup", () => (ui.isMouseDown = false));
 
   $("#btnPaper").button();
-  $("#btnPaper").on("mousedown", () => ui.handler(1));
+  $("#btnPaper").on("mousedown", () => ui.collectExamples(1));
   $("#btnPaper").on("mouseup", () => (ui.isMouseDown = false));
 
   $("#btnScissors").button();
-  $("#btnScissors").on("mousedown", () => ui.handler(2));
+  $("#btnScissors").on("mousedown", () => ui.collectExamples(2));
   $("#btnScissors").on("mouseup", () => (ui.isMouseDown = false));
 
   $("#btnNone").button();
-  $("#btnNone").on("mousedown", () => ui.handler(3));
+  $("#btnNone").on("mousedown", () => ui.collectExamples(3));
   $("#btnNone").on("mouseup", () => (ui.isMouseDown = false));
 };
 
@@ -51,10 +67,16 @@ ui.updateComputerPlay = () => {
   setTimeout(ui.updateComputerPlay, 100);
 };
 
+//
+//  handler for train button
+//
 ui.onTrain = e => {
   rps.train();
 };
 
+//
+//  handler for play button
+//
 ui.onPlay = e => {
   $("#spanStatus").html("");
   if (ui.isPaused) {
@@ -66,25 +88,17 @@ ui.onPlay = e => {
   }
 };
 
-ui.countDown = e => {
-  $("#divCountdown").html(ui.counter--);
-  if (ui.counter > 0) {
-    setTimeout(() => {
-      ui.countDown();
-    }, 500);
-  } else {
-    $("#divCountdown").fadeOut(250);
-    setTimeout(function() {
-      rps.predict();
-    }, 500);
-  }
-};
-
+//
+//  set which handler will collect examples
+//
 ui.setExampleHandler = handler => {
   ui.addExampleHandler = handler;
 };
 
-ui.handler = async label => {
+//
+//  collect examples for each label
+//
+ui.collectExamples = async label => {
   ui.isMouseDown = true;
   const className = RPS[label];
   const button = document.getElementById(className);
@@ -98,10 +112,9 @@ ui.handler = async label => {
   rps.dataActive = false;
 };
 
-ui.collectImages = e => {
-  console.log($(e.currentTarget).attr("label"));
-};
-
+//
+//  drawing a thumbnail on the button
+//
 ui.drawThumb = (img, label) => {
   if (rps.thumbDisplayed[label] == null) {
     const thumbCanvas = $("#" + RPS[label] + "-thumb")[0];
@@ -109,6 +122,9 @@ ui.drawThumb = (img, label) => {
   }
 };
 
+//
+//  draw a camera image on the main canvas
+//
 ui.draw = (image, w, h, canvas) => {
   const [width, height] = [224, 224];
   const ctx = canvas.getContext("2d");
@@ -124,9 +140,11 @@ ui.draw = (image, w, h, canvas) => {
   ctx.putImageData(imageData, 0, 0);
 };
 
+//
+//  judge who wins
+//
 ui.judgePlay = classId => {
   console.log("you: " + RPS[classId] + "; computer: " + RPS[ui.idxPlay]);
-  // compPlay = ui.computerPlay();
   let result;
   if (ui.idxPlay == classId) {
     result = "Tie";
@@ -138,10 +156,9 @@ ui.judgePlay = classId => {
   $("#spanStatus").html(result);
 };
 
-ui.computerPlay = () => {
-  // let idxPlay = ((Math.random() * 97) | 0) % 3;
-  console.info(RPS[idxPlay]);
-  // $("#imgPlay").show();
-  // $("#imgPlay").attr("src", "./assets/" + RPS[idxPlay] + ".png");
-  return idxPlay;
-};
+//
+//  update game status
+//
+ui.updateStatus = (msg) => {
+  $('#spanStatus').html(msg);
+}
