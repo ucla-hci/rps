@@ -1,0 +1,87 @@
+td {
+  text-align: center;
+  padding: 5px;
+}
+
+div.training-button {
+  font-size: small;
+  padding: 2px 5px;
+}
+
+label.training-label {
+  font-size: small;
+}
+
+.thumb-box-outer {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 4px;
+  position: relative;
+  transition: box-shadow 0.3s;
+}
+[data-active="up"] .panel-row-top .thumb-box-outer,
+[data-active="down"] .panel-row-bottom .thumb-box-outer,
+[data-active="left"] .panel-cell-left .thumb-box-outer,
+[data-active="right"] .panel-cell-right .thumb-box-outer {
+  box-shadow: 0 0 4px 4px #ffaa00;
+}
+.thumb-box-inner {
+  border: 1px solid #585858;
+  border-radius: 8px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  width: 64;
+}
+.thumb {
+  height: 64;
+  transform: scaleX(-1);
+}
+.thumb-box-outer .record-button {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.thumb-box-outer .record-button span {
+  /* background: #111; */
+  /* border: 1px solid #585858; */
+  /* border-radius: 3px; */
+  bottom: 9px;
+  color: #f8f8f8;
+  display: block;
+  font-size: 8px;
+  left: 9px;
+  position: absolute;
+  right: 9px;
+  opacity: 0.5;
+}
+
+#webcam {
+  border-radius: 12px;
+  transform: scaleX(-1);
+}
+
+#divComp {
+  border: 1px solid #585858;
+  border-radius: 8px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+#divInfo {
+  font-size: 40px;
+  word-wrap: break-word;
+  font-style: bold;
+}
+
+#divCountdown{
+  font-size: 110px;
+  font-style: bold;
+}
+
+img #imgPlay {
+  max-width: 250px;
+}

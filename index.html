@@ -1,0 +1,141 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Rock, Paper, Scissors</title>
+    <link rel=" stylesheet" href="./styles.css">
+    <link rel=" stylesheet" href="libs/jquery-ui.min.css">
+
+</head>
+
+<body>
+    <!-- <header>Play rock, paper, scissors with the computer.</header> -->
+
+    <table id="tbLayout" width="250px" border=0>
+        <tbody>
+            <!-- computer view -->
+            <tr>
+                <td>
+                    <div id="divComp" class="ui-widget" width="224px">
+                        <div id="divCountdown"></div>
+                        <img id="imgPlay"></img>
+                    </div>
+                </td>
+            </tr>
+            <!-- status -->
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="spanStatus" class="ui-widget">
+                        Train a model first
+                    </span>
+                    &nbsp;&nbsp;&nbsp;
+                    <span id="btnTrain">
+                        <div id="lbTrain">
+                            <b>Train</b>
+                        </div>
+                    </span>
+                    &nbsp;&nbsp;&nbsp;
+                    <span id="btnPlay">
+                        <div id="lbPlay">
+                            <b>Play</b>
+                        </div>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <!-- player view (webcam) -->
+            <tr>
+                <td>
+                    <video autoplay playsinline muted id="webcam" width="224" height="224"></video>
+                </td>
+            </tr>
+            <!-- control buttons -->
+
+            <tr>
+                <td>
+                    <table width="100%">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="thumb-box">
+                                        <div class="thumb-box-outer">
+                                            <div class="thumb-box-inner">
+                                                <canvas class="thumb" width=224 height=224 id="rock-thumb"></canvas>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div id="btnRock" class="training-button" label="rock">
+                                            Rock
+                                        </div>
+                                        <br/> &#215;
+                                        <label class="training-label" id="rock-total">0</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="thumb-box">
+                                        <div class="thumb-box-outer">
+                                            <div class="thumb-box-inner">
+                                                <canvas class="thumb" width=224 height=224 id="paper-thumb"></canvas>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div id="btnPaper" class="training-button" label="paper">
+                                            Paper
+                                        </div>
+                                        <br/> &#215;
+                                        <label class="training-label" id="paper-total">0</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="thumb-box">
+                                        <div class="thumb-box-outer">
+                                            <div class="thumb-box-inner">
+                                                <canvas class="thumb" width=224 height=224 id="scissors-thumb"></canvas>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div id="btnScissors" class="training-button" label="scissors">
+                                            Scissors
+                                        </div>
+                                        <br/> &#215;
+                                        <label class="training-label" id="scissors-total">0</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="thumb-box">
+                                        <div class="thumb-box-outer">
+                                            <div class="thumb-box-inner">
+                                                <canvas class="thumb" width=224 height=224 id="none-thumb"></canvas>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div id="btnNone" class="training-button" label="none">
+                                            None
+                                        </div>
+                                        <br/> &#215;
+                                        <label class="training-label" id="none-total">0</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.12.5"></script>
+    <script src="./libs/jquery.min.js"></script>
+    <script src="./libs/jquery-ui.min.js"></script>
+    <script src="./libs/webcam.js"></script>
+    <script src="./libs/controller_dataset.js"></script>
+    <script src="./src/rps.ui.js"></script>
+    <script src="./src/rps.main.js"></script>
+</body>
+
+</html>
