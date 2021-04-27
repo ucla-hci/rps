@@ -3,9 +3,9 @@
 //  rock-paper-scissors with the computer
 //
 //  main functions with tensorflow components
-//  ref: https://js.tensorflow.org/tutorials/webcam-transfer-learning.html
+//  for an up-to-date reference: https://js.tensorflow.org/tutorials/webcam-transfer-learning.html
 //
-//  xac@ucla.edu, 09/2018
+//  v1.1 xac@ucla.edu, 04/2021
 //
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -23,15 +23,22 @@ let isPredicting = false;
 //  load mobilenet -- a pre-trained model
 //
 async function loadMobilenet() {
+  // loading a pretrained model
   const mobilenet = await tf.loadModel(
     "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json"
   );
 
   // Return a model that outputs an internal activation.
   const layer = mobilenet.getLayer("conv_pw_13_relu");
-  return tf.model({ inputs: mobilenet.inputs, outputs: layer.output });
+  return tf.model({
+    inputs: mobilenet.inputs,
+    outputs: layer.output
+  });
 }
 
+//
+// ui to show training data as thumbnails
+//
 ui.setExampleHandler(label => {
   tf.tidy(() => {
     const img = webcam.capture();
@@ -53,7 +60,9 @@ rps.train = async () => {
 
   model = tf.sequential({
     layers: [
-      tf.layers.flatten({ inputShape: [7, 7, 256] }),
+      tf.layers.flatten({
+        inputShape: [7, 7, 256]
+      }),
       // Layer 1
       tf.layers.dense({
         units: 100, //ui.getDenseUnits(),
@@ -72,12 +81,16 @@ rps.train = async () => {
     ]
   });
 
+  // Adam Optimizer https://js.tensorflow.org/api/latest/#train.adam to optimize the parameters of the network
   // learning rate: 0.0001
   const optimizer = tf.train.adam(0.0001);
-  model.compile({ optimizer: optimizer, loss: "categoricalCrossentropy" });
+  model.compile({
+    optimizer: optimizer,
+    loss: "categoricalCrossentropy"
+  });
 
   const batchSize = Math.floor(
-    // batch size fraction: 0.4
+    // batch size fraction: 0.4 (a fraction of the input data x's 1st dimension)
     controllerDataset.xs.shape[0] * 0.4
   );
   if (!(batchSize > 0)) {
@@ -89,7 +102,7 @@ rps.train = async () => {
   // Train the model! Model.fit() will shuffle xs & ys so we don't have to.
   model.fit(controllerDataset.xs, controllerDataset.ys, {
     batchSize,
-    epochs: 20, //epochs: 20
+    epochs: 20, 
     callbacks: {
       onBatchEnd: async (batch, logs) => {
         console.info("Loss: " + logs.loss.toFixed(5));

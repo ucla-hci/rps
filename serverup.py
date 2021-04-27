@@ -1,30 +1,26 @@
-#!/usr/bin/env python
 
-###
-###	old insecure server
-###
 
-# from sys import argv
-# import subprocess
+#  creating a local https server
+# 
+#  by xac@ucla.edu, v2.0 03/2021
+#
 
-# if __name__ == "__main__":
-# 	if len(argv) < 2:
-# 		print 'usage: ./serverup.py <port_number>'
-# 		quit()
-
-# 	subprocess.call('nohup python -mSimpleHTTPServer ' + argv[1] + ' > /dev/null 2>&1 &', shell=True)
-
-###
-###	new secure server
-###
-
+import http.server
+import socketserver
 from sys import argv
-import BaseHTTPServer, SimpleHTTPServer
 import ssl
-import subprocess
 
-httpd = BaseHTTPServer.HTTPServer(('0.0.0.0', int(argv[1])),
-                                  SimpleHTTPServer.SimpleHTTPRequestHandler)
-httpd.socket = ssl.wrap_socket(
-    httpd.socket, certfile='./server.pem', server_side=True)
-httpd.serve_forever()
+PORT = 8888
+
+Handler = http.server.SimpleHTTPRequestHandler
+
+if __name__ == "__main__":
+
+    if len(argv) > 1:
+        PORT = int(argv[1])
+
+    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print("Serving at port", PORT)
+        httpd.socket = ssl.wrap_socket(
+        httpd.socket, certfile='./server.pem', server_side=True)
+        httpd.serve_forever()

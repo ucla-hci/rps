@@ -5,7 +5,7 @@
 //  main functions with tensorflow components
 //  ref: https://js.tensorflow.org/tutorials/webcam-transfer-learning.html
 //
-//  xac@ucla.edu, 09/2018
+//  v1.1 xac@ucla.edu, 04/2021
 //
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -21,7 +21,7 @@ rps.thumbDisplayed = {};
 //
 //  initialize ui
 //
-ui.init = function() {
+ui.init = function () {
   ui.isPaused = true;
   ui.idxPlay = ((Math.random() * 97) | 0) % 3;
   $("#imgPlay").attr("src", "./assets/" + RPS[ui.idxPlay] + ".png");
@@ -59,6 +59,9 @@ ui.init = function() {
   $("#btnNone").on("mouseup", () => (ui.isMouseDown = false));
 };
 
+//
+//  randomize how the computer shows rock, paper and scissors
+//
 ui.updateComputerPlay = () => {
   if (ui.isPaused) return;
   ui.idxPlay = (ui.idxPlay + 1) % 3 || ((Math.random() * 97) | 0) % 3;
@@ -101,7 +104,7 @@ ui.setExampleHandler = handler => {
 ui.collectExamples = async label => {
   ui.isMouseDown = true;
   const className = RPS[label];
-  const button = document.getElementById(className);
+  // const button = document.getElementById(className);
   const total = $("#" + className + "-total");
   while (ui.isMouseDown) {
     ui.addExampleHandler(label);
